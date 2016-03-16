@@ -1,0 +1,19 @@
+FROM ubuntu:15.10
+WORKDIR ~/
+
+RUN apt-get update \
+&& export DEBIAN_FRONTEND=noninteractive \
+&& apt-get upgrade -y \
+&& apt-get install -y lxde-core lxterminal \
+&& apt-get install -y build-essential git wget \
+&& git clone https://github.com/TigerVNC/tigervnc.git \
+&& wget ftp://ftp.x.org/pub/individual/xserver/xorg-server-1.17.2.tar.bz2 \
+&& apt-get install -y cmake xserver-xorg-dev libjpeg-turbo8-dev libfltk1.3-dev libgnutls-dev libxtst-dev libxdamage-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-composite-dev libxfont-dev autoconf xutils-dev pkg-config libtool gettext \
+&& ldconfig \
+&& cd tigervnc \
+&& git checkout v1.6.0 \
+&& mkdir build \
+&& cd build \
+&& cmake -Wno-dev .. \
+&& make \
+&& make install

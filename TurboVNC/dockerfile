@@ -1,0 +1,28 @@
+FROM ubuntu:15.10
+WORKDIR /root
+
+RUN apt-get update \
+&& export DEBIAN_FRONTEND=noninteractive \
+&& apt-get upgrade -y \
+&& apt-get install -y build-essential git wget \
+&& wget ftp://ftp.x.org/pub/individual/xserver/xorg-server-1.17.2.tar.bz2 \
+&& apt-get install -y cmake xserver-xorg-dev xserver-xorg-input-all libjpeg-turbo8-dev libfltk1.3-dev libgnutls-dev libxtst-dev libxdamage-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-composite-dev libxfont-dev autoconf xutils-dev pkg-config libtool gettext xfonts-utils twm xterm x11-xserver-utils firefox \
+&& ldconfig
+
+RUN apt-get install -y software-properties-common \
+&& echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
+&& add-apt-repository -y ppa:webupd8team/java \
+&& apt-get update \
+&& apt-get install -y oracle-java8-installer
+
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+ADD libjpeg-turbo.deb /root
+ADD turbovnc.deb /root
+RUN dpkg -i libjpeg-turbo.deb
+RUN apt-get install -y libxt-dev libpam0g-dev
+RUN dpkg -i turbovnc.deb
+
+ADD xstartup /root/.vnc/
+
+RUN ln -s /opt/TurboVNC/bin/* /usr/local/bin

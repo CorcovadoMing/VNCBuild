@@ -1,0 +1,33 @@
+FROM ubuntu:15.10
+WORKDIR /root
+
+RUN apt-get update \
+&& export DEBIAN_FRONTEND=noninteractive \
+&& apt-get upgrade -y \
+&& apt-get install -y build-essential git wget \
+&& git clone https://github.com/TigerVNC/tigervnc.git \
+&& wget ftp://ftp.x.org/pub/individual/xserver/xorg-server-1.17.2.tar.bz2 \
+&& apt-get install -y cmake xserver-xorg-dev xserver-xorg-input-all libjpeg-turbo8-dev libfltk1.3-dev libgnutls-dev libxtst-dev libxdamage-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-composite-dev libxfont-dev autoconf xutils-dev pkg-config libtool gettext xfonts-utils twm xterm x11-xserver-utils firefox \
+&& ldconfig \
+&& cd tigervnc \
+&& git checkout v1.6.0 \
+&& mkdir build \
+&& cd build \
+&& cmake -Wno-dev .. \
+&& make \
+&& make install \
+&& cp -vR ../unix/xserver unix/ \
+&& tar xvjf ~/xorg-server-1.17.2.tar.bz2 -C unix/xserver --strip-components=1 \
+&& cd unix/xserver \
+&& patch -Np1 -i ../../../unix/xserver117.patch \
+&& autoreconf -fi \
+&& ./configure $XORG_CONFIG --disable-xwayland --disable-dri --disable-dmx --disable-xorg --disable-xnest --disable-xvfb --disable-xwin --disable-xephyr --disable-kdrive --disable-devel-docs --disable-config-hal --disable-config-udev --disable-unit-tests --disable-selective-werror --disable-static --enable-dri3 --without-dtrace --enable-dri2 --enable-glx --with-pic \
+&& make TIGERVNC_SRCDIR=`pwd`/../../../ \
+&& cd ../../ \
+&& make install \
+&& cd unix/xserver/hw/vnc \
+&& make install \
+&& cd ../../../../ \
+&& mkdir -p /usr/local/share/X11 \
+&& ln -s /usr/share/X11/xkb /usr/local/share/X11/ \
+&& ln -s /usr/bin/xkbcomp /usr/local/bin/
