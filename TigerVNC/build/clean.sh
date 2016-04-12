@@ -1,1 +1,1 @@
-rm -r bin fltk-1.3.3 include lib libjpeg-turbo-1.4.2 nasm-2.12.01 share tigervnc-1.6.0 gnutls-3.4.10 m4-1.4.17 nettle-3.1
+rm -r bin fltk-1.3.3 include lib libjpeg-turbo-1.4.2 nasm-2.12.01 share tigervnc-1.6.0
