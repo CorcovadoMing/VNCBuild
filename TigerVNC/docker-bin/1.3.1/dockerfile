@@ -1,0 +1,24 @@
+FROM ubuntu:15.10
+WORKDIR /root
+
+RUN apt-get update \
+&& export DEBIAN_FRONTEND=noninteractive \
+&& apt-get upgrade -y \
+&& apt-get install -y build-essential git wget \
+&& apt-get install -y cmake xserver-xorg-dev xserver-xorg-input-all libjpeg-turbo8-dev libfltk1.3-dev libgnutls-dev libxtst-dev libxdamage-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-composite-dev libxfont-dev autoconf xutils-dev pkg-config libtool gettext xfonts-utils twm xterm x11-xserver-utils firefox \
+&& ldconfig
+
+RUN wget https://bintray.com/tigervnc/stable/download_file?file_path=tigervnc-Linux-x86_64-1.3.1.tar.gz \
+&& tar xvf download_file?file_path=tigervnc-Linux-x86_64-1.3.1.tar.gz \
+&& mkdir -p /usr/local/share/X11 \
+&& ln -s /usr/share/X11/xkb /usr/local/share/X11/ \
+&& ln -s /usr/bin/xkbcomp /usr/local/bin/
+
+RUN wget http://ftp.br.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u4_amd64.deb \
+&& dpkg -i *.deb
+
+RUN apt-get install -y software-properties-common \ 
+&& add-apt-repository -y ppa:bumblebee/stable \
+&& apt-get update \
+&& apt-get install -y virtualgl
+
